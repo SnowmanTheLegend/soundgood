@@ -1,0 +1,151 @@
+CREATE TABLE Instructor (
+ id SERIAL UNIQUE,
+ personnumber VARCHAR(50),
+ name VARCHAR(100),
+ age INT,
+ number VARCHAR(50),
+ email VARCHAR(100),
+ street VARCHAR(100),
+ zip VARCHAR(50),
+ city VARCHAR(100)
+);
+
+ALTER TABLE Instructor ADD CONSTRAINT PK_Instructor PRIMARY KEY (id);
+
+
+CREATE TABLE instrumentorensemble (
+ instructor_id INT NOT NULL,
+ instrumentorensemble VARCHAR(50) NOT NULL
+);
+
+ALTER TABLE instrumentorensemble ADD CONSTRAINT PK_instrumentorensemble PRIMARY KEY (instructor_id,instrumentorensemble);
+
+
+CREATE TABLE Instruments (
+ id SERIAL UNIQUE,
+ instrument VARCHAR(50),
+ brand VARCHAR(50),
+ price INT 
+);
+
+ALTER TABLE Instruments ADD CONSTRAINT PK_Instruments PRIMARY KEY (id);
+
+
+CREATE TABLE Lesson (
+ id SERIAL UNIQUE,
+ min_students INT,
+ max_students INT,
+ instrument VARCHAR(50),
+ level VARCHAR(50),
+ starttime TIMESTAMP(10),
+ endtime TIMESTAMP(10),
+ price INT,
+ instructor_id INT
+);
+
+ALTER TABLE Lesson ADD CONSTRAINT PK_Lesson PRIMARY KEY (id);
+
+
+CREATE TABLE Student (
+ id SERIAL UNIQUE,
+ personnumber VARCHAR(50) ,
+ name VARCHAR(100) ,
+ age INT,
+ number VARCHAR(50),
+ email VARCHAR(100),
+ sup_number INT,
+ sup_email VARCHAR(100),
+ street VARCHAR(100),
+ zip VARCHAR(50),
+ city VARCHAR(100)
+);
+
+ALTER TABLE Student ADD CONSTRAINT PK_Student PRIMARY KEY (id);
+
+
+CREATE TABLE Studentenrollment (
+ id SERIAL UNIQUE,
+ personnumber VARCHAR(50),
+ name VARCHAR(100),
+ age INT,
+ number VARCHAR(50),
+ email VARCHAR(100),
+ instrumentortype VARCHAR(50),
+ level VARCHAR(50)
+);
+
+ALTER TABLE Studentenrollment ADD CONSTRAINT PK_Studentenrollment  PRIMARY KEY (id);
+
+CREATE TABLE attendinglesson (
+ student_id INT NOT NULL,
+ lesson_id INT NOT NULL
+);
+
+ALTER TABLE attendinglesson ADD CONSTRAINT PK_attendinglesson PRIMARY KEY (student_id,lesson_id);
+
+
+CREATE TABLE ensemble (
+ id SERIAL UNIQUE,
+ min_students INT,
+ max_students INT,
+ genre VARCHAR(50),
+ starttime TIMESTAMP(10),
+ endtime TIMESTAMP(10),
+ price INT,
+ instructor_id INT
+);
+
+ALTER TABLE ensemble ADD CONSTRAINT PK_ensemble PRIMARY KEY (id);
+
+
+CREATE TABLE Loanedinstrument (
+ id SERIAL UNIQUE,
+ instrument_id INT NOT NULL,
+ loanstart DATE NOT NULL,
+ student_id INT NOT NULL,
+ loanend DATE
+);
+
+ALTER TABLE Loanedinstrument ADD CONSTRAINT PK_Loanedinstrument PRIMARY KEY (id);
+
+
+CREATE TABLE siblings (
+ person_id INT NOT NULL,
+ sibling_id INT NOT NULL
+);
+
+ALTER TABLE siblings ADD CONSTRAINT PK_siblings PRIMARY KEY (person_id,sibling_id);
+
+
+CREATE TABLE attendingensemble (
+ ensemble_id INT NOT NULL,
+ student_id INT NOT NULL
+);
+
+ALTER TABLE attendingensemble ADD CONSTRAINT PK_attendingensemble PRIMARY KEY (ensemble_id,student_id);
+
+
+ALTER TABLE instrumentorensemble ADD CONSTRAINT FK_instrumentorensemble_0 FOREIGN KEY (instructor_id) REFERENCES Instructor (id);
+
+
+ALTER TABLE Lesson ADD CONSTRAINT FK_Lesson_0 FOREIGN KEY (instructor_id) REFERENCES Instructor (id);
+
+
+ALTER TABLE attendinglesson ADD CONSTRAINT FK_attendinglesson_0 FOREIGN KEY (student_id) REFERENCES Student (id);
+ALTER TABLE attendinglesson ADD CONSTRAINT FK_attendinglesson_1 FOREIGN KEY (lesson_id) REFERENCES Lesson (id);
+
+
+ALTER TABLE ensemble ADD CONSTRAINT FK_ensemble_0 FOREIGN KEY (instructor_id) REFERENCES Instructor (id);
+
+
+ALTER TABLE Loanedinstrument ADD CONSTRAINT FK_Loanedinstrument_0 FOREIGN KEY (instrument_id) REFERENCES Instruments (id);
+ALTER TABLE Loanedinstrument ADD CONSTRAINT FK_Loanedinstrument_1 FOREIGN KEY (student_id) REFERENCES Student (id);
+
+
+ALTER TABLE siblings ADD CONSTRAINT FK_siblings_0 FOREIGN KEY (person_id) REFERENCES Student (id);
+ALTER TABLE siblings ADD CONSTRAINT FK_siblings_1 FOREIGN KEY (sibling_id) REFERENCES Student (id);
+
+
+ALTER TABLE attendingensemble ADD CONSTRAINT FK_attendingensemble_0 FOREIGN KEY (ensemble_id) REFERENCES ensemble (id);
+ALTER TABLE attendingensemble ADD CONSTRAINT FK_attendingensemble_1 FOREIGN KEY (student_id) REFERENCES Student (id);
+
