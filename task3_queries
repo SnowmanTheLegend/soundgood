@@ -1,0 +1,25 @@
+QUERY 1:
+WITH ensembles(month,ensemblecount) AS (SELECT EXTRACT(MONTH FROM e.starttime) AS month, COUNT(e) AS ensemblecount FROM ensemble e WHERE e.starttime BETWEEN '2022-01-01 00:00:00' AND '2023-01-01 00:00:00' GROUP BY EXTRACT(MONTH FROM e.starttime)),
+lessons(month,lessoncount) AS (SELECT EXTRACT(MONTH FROM l.starttime) AS month, COUNT(l) AS lessoncount FROM lesson l WHERE l.starttime BETWEEN '2022-01-01 00:00:00' AND '2023-01-01 00:00:00' AND l.max_students>=2 GROUP BY EXTRACT(MONTH FROM l.starttime)),
+individuallessons(month,individuallessoncount) AS (SELECT EXTRACT(MONTH FROM l.starttime) AS month, COUNT(l) AS lessoncount FROM lesson l WHERE l.starttime BETWEEN '2022-01-01 00:00:00' AND '2023-01-01 00:00:00' AND l.max_students=1 GROUP BY EXTRACT(MONTH FROM l.starttime))
+SELECT ensemblecount, lessoncount, individuallessoncount,COALESCE(ensemblecount,0)+COALESCE(lessoncount,0)+COALESCE(individuallessoncount,0) AS total FROM ((ensembles NATURAL FULL OUTER JOIN lessons) NATURAL FULL OUTER JOIN individuallessons);
+
+Query 2: 
+WITH ensembles(month,ensemblecount) AS (SELECT EXTRACT(MONTH FROM e.starttime) AS month, COUNT(e) AS ensemblecount FROM ensemble e WHERE e.starttime BETWEEN '2022-01-01 00:00:00' AND '2023-01-01 00:00:00' GROUP BY EXTRACT(MONTH FROM e.starttime)),
+lessons(month,lessoncount) AS (SELECT EXTRACT(MONTH FROM l.starttime) AS month, COUNT(l) AS lessoncount FROM lesson l WHERE l.starttime BETWEEN '2022-01-01 00:00:00' AND '2023-01-01 00:00:00' AND l.max_students>=2 GROUP BY EXTRACT(MONTH FROM l.starttime)),
+individuallessons(month,individuallessoncount) AS (SELECT EXTRACT(MONTH FROM l.starttime) AS month, COUNT(l) AS lessoncount FROM lesson l WHERE l.starttime BETWEEN '2022-01-01 00:00:00' AND '2023-01-01 00:00:00' AND l.max_students=1 GROUP BY EXTRACT(MONTH FROM l.starttime))
+SELECT SUM(ensemblecount)/12 AS ensembles, SUM(lessoncount)/12 AS lessons,SUM(individuallessoncount)/12 AS individuallessons,(SUM(COALESCE(ensemblecount,0))+SUM(COALESCE(lessoncount,0))+SUM(COALESCE(individuallessoncount,0)))/12 as totalavg FROM ((ensembles NATURAL FULL OUTER JOIN lessons) NATURAL FULL JOIN individuallessons);
+
+Query 3:
+WITH lectures AS(SELECT i.id, i.name
+FROM instructor AS i JOIN lesson AS l ON i.id = l.instructor_id WHERE EXTRACT(MONTH FROM l.starttime) = EXTRACT(MONTH FROM CURRENT_TIMESTAMP)
+UNION ALL
+SELECT i.id, i.name
+FROM instructor AS i JOIN ensemble AS e ON i.id = e.instructor_id WHERE EXTRACT(MONTH FROM e.starttime) = EXTRACT(MONTH FROM CURRENT_TIMESTAMP))
+SELECT COUNT(*),id, name FROM lectures GROUP BY id, name ORDER BY count DESC;
+
+Query 4:
+WITH ensembles(id,count) AS
+(SELECT id,COUNT(*) FROM ensemble, attendingensemble WHERE ensemble_id=id GROUP BY id)
+SELECT ensemble.id,ensembles.count,( CASE WHEN (ensemble.max_students - ensembles.count)=0 THEN 'FULL' WHEN (ensemble.max_students - ensembles.count)<2 THEN '1-2 seats left' ELSE 'more seats left' END) as placesleft 
+FROM (ensembles NATURAL FULL JOIN ensemble) WHERE EXTRACT(WEEK FROM ensemble.starttime) = EXTRACT(WEEK FROM CURRENT_TIMESTAMP)+1;
