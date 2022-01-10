@@ -25,5 +25,5 @@ SELECT COUNT(*),id, name FROM lectures GROUP BY id, name ORDER BY count DESC;
 Query 4:
 WITH ensembles(id,count) AS
 (SELECT id,COUNT(*) FROM ensemble, attendingensemble WHERE ensemble_id=id GROUP BY id)
-SELECT ensemble.id,ensembles.count,( CASE WHEN (ensemble.max_students - ensembles.count)=0 THEN 'FULL' WHEN (ensemble.max_students - ensembles.count)<2 THEN '1-2 seats left' ELSE 'more seats left' END) as placesleft 
+SELECT ensemble.id,ensembles.count,( CASE WHEN (ensemble.max_students - ensembles.count)=0 THEN 'FULL' WHEN (ensemble.max_students - ensembles.count)<3 THEN '1-2 seats left' ELSE 'more seats left' END) as placesleft 
 FROM (ensembles NATURAL FULL JOIN ensemble) WHERE EXTRACT(WEEK FROM ensemble.starttime) = EXTRACT(WEEK FROM CURRENT_TIMESTAMP)+1;
