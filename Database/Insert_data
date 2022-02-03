@@ -73,7 +73,7 @@ VALUES (10,30, 'Punk rock','2022-04-11 14:00:01','2022-04-11 15:00:01',30,3),
 (10,30, 'Classical','2022-01-25 14:00:01','2022-01-25 15:00:01',30,4);
 
 
-INSERT INTO lesson(min_students,max_students,instrumentortype,level,starttime,endtime,price,instructor_id)
+INSERT INTO lesson(min_students,max_students,instrument,level,starttime,endtime,price,instructor_id)
 VALUES 
 (5,20, 'Guitar', 'Beginner','2021-07-01 14:00:01','2021-07-01 15:30:01',30,1),
 (5,20, 'Guitar', 'Beginner','2021-08-01 14:00:01','2021-08-01 15:30:01',30,1),
@@ -87,6 +87,12 @@ VALUES
 (5,20, 'Guitar', 'advanced','2022-01-02 16:00:01','2022-01-02 17:30:01',40,8),
 (5,20, 'Guitar', 'intermediate','2022-01-03 16:00:01','2022-01-03 17:30:01',40,8),
 (5,20, 'Guitar', 'advanced','2022-01-04 16:00:01','2022-01-04 17:30:01',40,8);
+(1,1, 'Piano', 'Beginner','2022-01-03 12:00:01','2022-01-03 13:30:01',30,3),
+(1,1, 'Piano', 'Beginner','2022-02-04 14:00:01','2022-02-04 15:30:01',30,3),
+(1,1, 'Piano', 'intermediate','2022-01-01 16:00:01','2022-01-01 17:30:01',40,3),
+(1,1, 'Piano', 'advanced','2022-01-02 16:00:01','2022-01-02 17:30:01',40,3),
+(1,1, 'Piano', 'intermediate','2022-01-03 16:00:01','2022-01-03 17:30:01',40,3),
+(1,1, 'Piano', 'advanced','2022-01-04 16:00:01','2022-01-04 17:30:01',40,3);
 
 INSERT INTO attendingensemble
 VALUES(22,3),
